@@ -25,6 +25,8 @@ int core1_function(void *ctx)
 int main(void)
 {
     sysctl_pll_set_freq(SYSCTL_PLL0, 800000000);
+    sysctl_pll_enable(SYSCTL_PLL1);
+    sysctl_clock_enable(SYSCTL_CLOCK_PLL1);
     uint64_t core = current_coreid();
     int data;
     printf("Core %ld Hello world\n", core);
@@ -35,13 +37,14 @@ int main(void)
     while (addr < 0x80800000) {
         *(unsigned char*)addr = 0x35;
         if (*(unsigned char*)addr == 0x35) {
-            printf("addr %d\n write-read OK!\n", addr);
         } else {
-            printf("addr %d\n failed!\n", addr);
             while (1) { }
         }
         *(unsigned char*)addr = 0x0;
         addr = addr + 1;
+        if (addr % 0x10000 == 0) {
+            printf("now addr = %x\n", addr);
+        }
     }
     printf("Memory testing passed!");
 
