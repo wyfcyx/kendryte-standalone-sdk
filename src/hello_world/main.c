@@ -30,6 +30,21 @@ int main(void)
     printf("Core %ld Hello world\n", core);
     register_core1(core1_function, NULL);
 
+    printf("Start testing memory!");
+    int addr = 0x80600000;
+    while (addr < 0x80800000) {
+        *(unsigned char*)addr = 0x35;
+        if (*(unsigned char*)addr == 0x35) {
+            printf("addr %d\n write-read OK!\n", addr);
+        } else {
+            printf("addr %d\n failed!\n", addr);
+            while (1) { }
+        }
+        *(unsigned char*)addr = 0x0;
+        addr = addr + 1;
+    }
+    printf("Memory testing passed!");
+
     /* Clear stdin buffer before scanf */
     sys_stdin_flush();
 
